@@ -327,7 +327,7 @@ public class CalibrationActivity extends AppCompatActivity {
                     return;
                 }
                 Toast.makeText(CalibrationActivity.this, "转到零位:" + (getPeople(mNodZeroValue / 10f)), Toast.LENGTH_SHORT).show();
-                serialHelper.sendHex(SerialPortUtil.getSendData(Order.DOWN_SERVO_STATE, 1, mNodZeroValue, 5000));
+                serialHelper.sendHex(SerialPortUtil.getSendData(Order.DOWN_SERVO_STATE, 1, mNodZeroValue - 100, 5000));
             }
         });
     }
@@ -496,7 +496,7 @@ public class CalibrationActivity extends AppCompatActivity {
                                                 mHandler.postDelayed(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        sendCheck(Order.DOWN_SERVO_STATE, 1, mNodZeroValue, 2000);
+                                                        sendCheck(Order.DOWN_SERVO_STATE, 1, mNodZeroValue - 100, 2000);
                                                         mTvNodCalibrationValue.setText(mTvNodCalibrationValue.getText().toString()
                                                                 + "  *  校准：" + getPeople(mNodZeroValue / 10f));
                                                     }

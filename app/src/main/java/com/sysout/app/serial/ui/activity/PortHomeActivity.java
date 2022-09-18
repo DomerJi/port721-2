@@ -2,12 +2,10 @@ package com.sysout.app.serial.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,13 +14,6 @@ import com.pl.sphelper.ConstantUtil;
 import com.pl.sphelper.SPHelper;
 import com.sysout.app.serial.R;
 import com.sysout.app.serial.utils.CommandExecution;
-import com.sysout.app.serial.utils.SerialDataUtils;
-import com.sysout.app.serial.utils.SerialPortUtil;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 public class PortHomeActivity extends AppCompatActivity {
 
@@ -67,12 +58,6 @@ public class PortHomeActivity extends AppCompatActivity {
         mBtPage03 = (Button) findViewById(R.id.bt_page_03);
         mBtPage04 = (Button) findViewById(R.id.bt_page_04);
         mTvDpi = (TextView) findViewById(R.id.tv_dpi);
-        mTvDpi.setText("dpi = " + getResources().getDisplayMetrics().densityDpi
-                + "\nFontScale = " + getFontScale());
-
-        mTvDpi.setOnClickListener(v -> {
-            getValue(mTvDpi);
-        });
         mBtBack.setOnClickListener(v -> {
             finish();
         });
@@ -129,37 +114,37 @@ public class PortHomeActivity extends AppCompatActivity {
         mTvTestParse = (Button) findViewById(R.id.tv_test_parse);
         mTvTextParseResult = (TextView) findViewById(R.id.tv_text_parse_result);
 
-        mTvTestParse.setOnClickListener(v -> {
-            SerialPortUtil.setParseDataListener(new SerialPortUtil.ParseDataListener() {
-
-                @Override
-                public void onHandleOrder(int order, int[] bytes) {
-                    mTvTextParseResult.setText("指令：" + SerialDataUtils.Int2Hex(order) + "   参数：" + Arrays.toString(bytes));
-                }
-            });
-            // 上报电池电量
+//        mTvTestParse.setOnClickListener(v -> {
+//            SerialPortUtil.setParseDataListener(new SerialPortUtil.ParseDataListener() {
+//
+//                @Override
+//                public void onHandleOrder(int order, int[] bytes) {
+//                    mTvTextParseResult.setText("指令：" + SerialDataUtils.Int2Hex(order) + "   参数：" + Arrays.toString(bytes));
+//                }
+//            });
+        // 上报电池电量
 //            mTvTextParseResult.setText(
 //                    SerialPortUtil.getSendData(UP_ELECTRICITY_STATE, new int[]{7271}));
 //            SerialPortUtil.parseOrder("C0 CE 81 02 00 67 1C 94");
 
-            //  1号舵机在-20度位置
+        //  1号舵机在-20度位置
 //            mTvTextParseResult.setText(
 //                    SerialPortUtil.getSendData(UP_RSERVO_STATE, new int[]{1, -200}));
 //            SerialPortUtil.parseOrder("C0 CE 84 05 00 01 38 FF FF FF 4D");
-            // 控制1号舵机转动到-20度位置，需要0.5s
+        // 控制1号舵机转动到-20度位置，需要0.5s
 
-            //  1号舵机在-20度位置
+        //  1号舵机在-20度位置
 //            mTvTextParseResult.setText(
 //                    SerialPortUtil.getSendData(Order.UP_STATE, new int[]{2, 0, 1, 0, 1, 0}));
 //            SerialPortUtil.parseOrder("C0 CE 80 16 00 02 00 00 01 00 01 00 19"); // 按键
 //            SerialPortUtil.parseOrder("C0 CE 80 16 00 03 00 00 00 19"); // 红外
-            // 控制1号舵机转动到-20度位置，需要0.5s
+        // 控制1号舵机转动到-20度位置，需要0.5s
 
 
 //            mTvTextParseResult.setText(
 //                    SerialPortUtil.getSendData(Order.UP_STATE, new int[]{2, 0, 1, 0, 1, 0}));
 
-        });
+//        });
 
     }
 
@@ -180,45 +165,32 @@ public class PortHomeActivity extends AppCompatActivity {
         return lv;
     }
 
-    public void getValue(View view) {
-        long start = System.currentTimeMillis();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setTextInfo();
+    }
 
-        Map<String, ?> map = SPHelper.getAll();
+    public void setTextInfo() {
+
         // todo 模拟 test
 //        SPHelper.save(ConstantUtil.Key.SHAKE_ZERO, new Random().nextInt(400));
 //        SPHelper.save(ConstantUtil.Key.NOD_ZERO, new Random().nextInt(260));
 //        SPHelper.save(ConstantUtil.Key.ROTATE_ZERO, new Random().nextInt(260));
-//        String result1 = "点头=" + SPHelper.getInt(ConstantUtil.Key.NOD_ZERO);
-//        String result2 = "摇头=" + SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
-//        String result4 = "转身=" + SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
-//
-//        Set<String> set = SPHelper.getStringSet("c",null);
+        String result1 = "\n点头零位=" + SPHelper.getInt(ConstantUtil.Key.NOD_ZERO);
+        String result2 = "\n摇头零位=" + SPHelper.getInt(ConstantUtil.Key.SHAKE_ZERO);
+        String result3 = "\n转身零位=" + SPHelper.getInt(ConstantUtil.Key.ROTATE_ZERO);
+        mTvDpi.setText("");
+        mTvDpi.setText(mTvDpi.getText().toString() + "零位非" + ConstantUtil.DEFAULT_INT + "即为设置[成功]\n");
+        mTvDpi.setText(mTvDpi.getText().toString() + result1);
+        mTvDpi.setText(mTvDpi.getText().toString() + result2);
+        mTvDpi.setText(mTvDpi.getText().toString() + result3);
 
-        long end = System.currentTimeMillis();
-        Toast.makeText(this, "takes " + (end - start) + "millis", Toast.LENGTH_SHORT).show();
-
-        String result = "";
-        for (Map.Entry<String, ?> entry : map.entrySet()) {
-            String k = entry.getKey();
-            Object v = entry.getValue();
-            if (v instanceof Set) {
-                String result3 = "";
-                for (String string : (Set<String>) v) {
-                    result3 += "\"" + string + "\"";
-                    result3 += "    ";
-                }
-                v = result3;
-            }
-            result += k + "=" + v + "\n";
+        if ((result1 + result2 + result3).contains(String.valueOf(ConstantUtil.DEFAULT_INT))) {
+            mTvDpi.setText(mTvDpi.getText().toString() + "\n\n× 有[失败]项");
+        } else {
+            mTvDpi.setText(mTvDpi.getText().toString() + "\n\n√ 全部设置[成功]");
         }
-
-        if (TextUtils.isEmpty(result)) {
-            result = "result is null";
-        }
-        mTvDpi.setText(mTvDpi.getText().toString() + "_" + result);
-//        mTvDpi.setText(mTvDpi.getText().toString() + "_" + result1);
-//        mTvDpi.setText(mTvDpi.getText().toString() + "_" + result2);
-//        mTvDpi.setText(mTvDpi.getText().toString() + "_" + result4);
 
     }
 
